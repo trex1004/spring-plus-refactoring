@@ -28,7 +28,7 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(Long userId, String email, UserRole userRole) {
+    public String createToken(Long userId, String email,String nickname, UserRole userRole) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -36,6 +36,7 @@ public class JwtUtil {
                         .subject(String.valueOf(userId))
                         .claim("email", email)
                         .claim("userRole", userRole)
+                        .claim("nickname", nickname)
                         .expiration(new Date(date.getTime() + TOKEN_TIME))
                         .issuedAt(date) // 발급일
                         .signWith(key, Jwts.SIG.HS256) // 암호화 알고리즘
