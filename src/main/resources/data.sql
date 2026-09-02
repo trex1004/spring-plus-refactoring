@@ -1,6 +1,6 @@
 -- 로컬 수동 검증 전용 fixture
 -- 로그인 계정: admin@example.com / 1234, seed-user01@example.com / 1234
--- users -> todos -> managers -> comments 순서를 지킨다.
+-- users -> todos -> managers -> comments -> log순서를 지킨다.
 
 INSERT INTO users (id, email, password, nickname, user_role, created_at, modified_at) VALUES
                                                                                           (1, 'admin@example.com', '$2y$10$uTRzDYL1iM/i2iH0BULrsO5UCJkFxJCklIsUEO7sgil9L/Yt.j816', '관리자', 'ADMIN', '2026-09-01 09:00:00', '2026-09-01 09:00:00'),
@@ -66,3 +66,17 @@ INSERT INTO comments (id, contents, user_id, todo_id, created_at, modified_at) V
                                                                                    (22, '댓글 목록 첫 번째입니다.', 2, 14, '2026-09-02 13:10:00', '2026-09-02 13:10:00'),
                                                                                    (23, '댓글 목록 두 번째입니다.', 3, 14, '2026-09-02 13:20:00', '2026-09-02 13:20:00'),
                                                                                    (24, '최종 회귀를 시작합니다.', 4, 15, '2026-09-02 13:40:00', '2026-09-02 13:40:00');
+INSERT INTO log (id, requester_id, todo_id, manager_user_id, created_at) VALUES
+                                                                             (1, 2, 1, 3, '2026-09-01 09:35:00'),
+                                                                             (2, 3, 2, 4, '2026-09-01 10:05:00'),
+                                                                             (3, 4, 3, 5, '2026-09-01 11:05:00'),
+                                                                             (4, 7, 6, 8, '2026-09-02 09:05:00'),
+
+                                                                             -- 존재하지 않는 담당자를 등록하려고 한 실패 요청
+                                                                             (5, 8, 7, 999, '2026-09-02 09:35:00'),
+
+                                                                             -- 동일 요청을 다시 시도한 로그
+                                                                             (6, 8, 7, 999, '2026-09-02 09:36:00'),
+
+                                                                             (7, 9, 8, 10, '2026-09-02 10:05:00'),
+                                                                             (8, 11, 10, 12, '2026-09-02 11:05:00');
