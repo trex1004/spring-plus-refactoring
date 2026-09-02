@@ -36,10 +36,12 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+        log.info("JwtFilter 진입 - uri={}", request.getRequestURI());
 
         String token = resolveToken(request);
 
         if (token == null) {
+            log.info("JWT 없음 또는 Bearer 형식 불일치");
             filterChain.doFilter(request, response);
             return;
         }
@@ -54,6 +56,8 @@ public class JwtFilter extends OncePerRequestFilter {
             );
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
+            log.info("JWT 인증 성공 - userId={}, role={}",
+                    authUser.getId(), authUser.getUserRole());
             context.setAuthentication(authentication);
             SecurityContextHolder.setContext(context);
 
