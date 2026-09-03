@@ -5,8 +5,10 @@ import org.example.expert.client.WeatherClient;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.todo.dto.request.TodoSaveRequest;
+import org.example.expert.domain.todo.dto.request.TodoSearchCondition;
 import org.example.expert.domain.todo.dto.response.TodoResponse;
 import org.example.expert.domain.todo.dto.response.TodoSaveResponse;
+import org.example.expert.domain.todo.dto.response.TodoSearchResponse;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponse;
@@ -82,5 +84,25 @@ public class TodoService {
                 todo.getCreatedAt(),
                 todo.getModifiedAt()
         );
+    }
+
+    public Page<TodoSearchResponse> searchTodos(int page, int size, TodoSearchCondition condition) {
+        validateSearchRequest(page, size, condition);
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return todoRepository.searchTodos(condition, pageable);
+    }
+
+    private void validateSearchRequest(int page, int size, TodoSearchCondition condition) {
+        if (page < 1 || size < 1) {
+            throw new InvalidRequestException("page와 사이즈는 1이상이어야 합니다.");
+        }
+        LocalDateTime start = condition.getCreatedAtStart();
+        LocalDateTime end = condition.getCreatedAtEnd();
+        if (start != null && end != null && start.isAfter(end)) {
+            throw new InvalidRequestException("생성일 시작은 종료보다 늦을 수 없습니다.");
+
+        }
+
     }
 }

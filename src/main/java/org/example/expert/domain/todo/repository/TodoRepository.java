@@ -33,5 +33,4 @@ public interface TodoRepository extends JpaRepository<Todo, Long>, TodoQueryRepo
                            @Param("modifiedAtEnd") LocalDateTime modifiedAtEnd,
                            Pageable pageable);
 
-
 }
